@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"Server/models"
-	"Server/repositories"
-	"Server/utils"
+	"Server/internal/models"
+	"Server/internal/repositories"
+	"Server/internal/utils"
 )
 
 var (

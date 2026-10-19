@@ -1,7 +1,7 @@
 // Package handlers
 package handlers
 
-import "Server/services"
+import "Server/internal/services"
 
 type Handlers struct {
 	Auth IAuthHandler

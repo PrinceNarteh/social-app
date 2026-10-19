@@ -3,8 +3,8 @@ package utils
 import (
 	"time"
 
-	"Server/config"
-	"Server/models"
+	"Server/internal/config"
+	"Server/internal/models"
 
 	"github.com/golang-jwt/jwt/v5"
 )

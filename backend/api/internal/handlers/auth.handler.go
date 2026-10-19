@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"Server/models"
-	"Server/services"
-	"Server/utils"
+	"Server/internal/models"
+	"Server/internal/services"
+	"Server/internal/utils"
 
 	"github.com/gofiber/fiber/v3"
 )

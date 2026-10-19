@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 
-	"Server/models"
+	"Server/internal/models"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"

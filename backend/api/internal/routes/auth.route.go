@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"Server/handlers"
+	"Server/internal/handlers"
 
 	"github.com/gofiber/fiber/v3"
 )

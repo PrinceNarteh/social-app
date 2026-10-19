@@ -1,7 +1,7 @@
 // Package services
 package services
 
-import "Server/repositories"
+import "Server/internal/repositories"
 
 type Services struct {
 	Auth IAuthService

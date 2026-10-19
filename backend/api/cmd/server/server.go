@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 
-	"Server/database"
-	"Server/handlers"
-	"Server/repositories"
-	"Server/routes"
-	"Server/services"
-	"Server/utils"
+	"Server/internal/database"
+	"Server/internal/handlers"
+	"Server/internal/repositories"
+	"Server/internal/routes"
+	"Server/internal/services"
+	"Server/internal/utils"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
