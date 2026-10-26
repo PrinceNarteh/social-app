@@ -10,6 +10,9 @@ import (
 	"Server/internal/services"
 	"Server/internal/utils"
 
+	_ "Server/docs"
+
+	swaggo "github.com/gofiber/contrib/v3/swaggo"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/gofiber/fiber/v3/middleware/logger"
@@ -21,7 +24,14 @@ func initApp() (*fiber.App, *database.MongoDBClient) {
 		ErrorHandler: utils.ErrorHandler,
 	})
 
-	app.Use(cors.New())
+	app.Use(cors.New(
+		cors.Config{
+			AllowCredentials: true,
+			AllowOriginsFunc: func(origin string) bool {
+				return true
+			},
+		},
+	))
 	app.Use(logger.New())
 	app.Use(recover.New())
 
@@ -42,6 +52,9 @@ func initApp() (*fiber.App, *database.MongoDBClient) {
 	handlers := handlers.NewHandlers(svc)
 
 	routes.InitRoutes(app, handlers)
+
+	// Serve Swagger Documentation
+	app.Get("/swagger/*", swaggo.HandlerDefault)
 
 	return app, db
 }
