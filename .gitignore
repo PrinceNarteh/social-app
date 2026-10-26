@@ -1,1 +1,24 @@
+# Go binaries and build artifacts
+*.o
+*.a
+*.so
+*.test
+*.prof
+*.out
+*.exe
+*.exe~
+*.dll
+*.dylib
+
+# Air live-reload temporary build folder
+tmp/
+bin/
+
+# Environment variables and secrets
 .env
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
