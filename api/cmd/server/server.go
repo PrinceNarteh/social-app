@@ -1,14 +1,13 @@
 package main
 
 import (
-	"log"
-
 	"Server/internal/database"
 	"Server/internal/handlers"
 	"Server/internal/repositories"
 	"Server/internal/routes"
 	"Server/internal/services"
 	"Server/internal/utils"
+	"log"
 
 	_ "Server/docs"
 

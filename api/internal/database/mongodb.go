@@ -2,12 +2,11 @@
 package database
 
 import (
+	"Server/internal/config"
 	"context"
 	"fmt"
 	"log"
 	"time"
-
-	"Server/internal/config"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -25,7 +24,7 @@ func ConnectDB() (*MongoDBClient, error) {
 	defer cancel()
 
 	opts := options.Client().
-		ApplyURI(config.Env.DB.URI).
+		ApplyURI(config.Env.DB.URL).
 		SetAuth(options.Credential{
 			Username: config.Env.DB.Username,
 			Password: config.Env.DB.Password,
@@ -52,7 +51,7 @@ func (c *MongoDBClient) CreateConstraints() error {
 	defer cancel()
 
 	indexModel := mongo.IndexModel{
-		Keys:    bson.D{{Key: "email", Value: 1}},
+		Keys:    bson.D{bson.E{Key: "email", Value: 1}},
 		Options: options.Index().SetUnique(true).SetName("email_unique"),
 	}
 	name, err := c.Database.Collection("users").Indexes().CreateOne(ctx, indexModel)

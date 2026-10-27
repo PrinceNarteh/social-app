@@ -15,7 +15,7 @@ type appConfig struct {
 }
 
 type dbConfig struct {
-	URI      string
+	URL      string
 	Username string
 	Password string
 	Name     string
