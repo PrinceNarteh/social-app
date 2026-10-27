@@ -10,7 +10,7 @@ import (
 
 // @title Fiber Golang Rest API
 // @version 1.0.0
-// description This is swagger docs for Fiber Golang Rest API
+// @description This is swagger docs for Fiber Golang Rest API
 // @host localhost:4000
 // @BasePath /
 // @schemes http
@@ -18,7 +18,6 @@ import (
 // @in header
 // @name Authorization
 // @description Type "Bearer" followed by a space and the token
-
 func main() {
 	app, db := initApp()
 

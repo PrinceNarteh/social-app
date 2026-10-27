@@ -1,7 +1,23 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is swagger docs for Fiber Golang Rest API",
+        "title": "Fiber Golang Rest API",
+        "contact": {},
+        "version": "1.0.0"
     },
-    "paths": {}
+    "host": "localhost:4000",
+    "basePath": "/",
+    "paths": {},
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and the token",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
 }
