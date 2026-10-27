@@ -1,0 +1,80 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: social-app-db
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: social-app-me
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo:27017/
+      ME_CONFIG_BASICAUTH_ENABLED: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_PASSWORD}
+    depends_on:
+      - mongo
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    container_name: social-app-api
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+      - "2345:2345"
+
+    # Volume mounts - THE KEY TO HOT RELOADING
+    # Mount source code as a volume so changes are reflected immediately
+    volumes:
+      # Mount the entire project directory
+      # This allows Air to see file changes in real-time
+      - ./api:/app
+
+      # Anonymous volume for Go module cache
+      # Prevents re-downloading dependencies on every restart
+      - go-mod-cache:/go/pkg/mod
+
+      # Anonymous volume for Go build cache
+      # Speeds up subsequent builds significantly
+      - go-build-cache:/root/.cache/go-build
+
+      # Exclude the tmp directory from syncing
+      # This prevents conflicts with Air's build artifacts
+      - /app/tmp
+
+    # Environment variables for the application
+    environment:
+      # Application configuration
+      - PORT=4000
+      - ENVIRONMENT=development
+
+      # Go specific settings
+      - GO111MODULE=on
+      - GOPROXY=https://proxy.golang.org,direct
+
+    depends_on:
+      - mongo
+
+# Named volumes for data persistence and caching
+volumes:
+  mongo_data:
+
+  # Go module cache - shared across rebuilds
+  go-mod-cache:
+    driver: local
+
+  # Go build cache - speeds up compilation
+  go-build-cache:
+    driver: local
