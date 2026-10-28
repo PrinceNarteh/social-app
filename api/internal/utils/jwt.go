@@ -12,7 +12,6 @@ import (
 type AccessClaims struct {
 	UserId string
 	Email  string
-	Roles  []string
 	jwt.RegisteredClaims
 }
 
@@ -27,7 +26,6 @@ func GenerateTokens(user *models.User) (*models.TokenPair, error) {
 	accessClaims := AccessClaims{
 		UserId: user.ID.Hex(),
 		Email:  user.Email,
-		Roles:  user.Roles,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "go-api",
 			Subject:   user.ID.Hex(),

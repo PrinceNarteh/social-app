@@ -33,10 +33,6 @@ func (s *authService) Login(data *models.LoginRequest) (*models.User, *models.To
 		return nil, nil, ErrInvalidCredentials
 	}
 
-	if !user.IsActive {
-		return nil, nil, errors.New("please kindly check your email to validate your email")
-	}
-
 	tokenPair, err := utils.GenerateTokens(user)
 	if err != nil {
 		return nil, nil, err
@@ -48,7 +44,6 @@ func (s *authService) Login(data *models.LoginRequest) (*models.User, *models.To
 func (s *authService) Register(user *models.User) (*models.TokenPair, error) {
 	now := time.Now()
 
-	user.IsActive = true
 	user.CreatedAt = now
 	user.UpdatedAt = now
 

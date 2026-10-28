@@ -4,6 +4,7 @@ import (
 	"Server/internal/models"
 	"Server/internal/services"
 	"Server/internal/utils"
+	"fmt"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -50,15 +51,33 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	})
 }
 
+// Register
+// @Summary Register a new user
+// @Description Register a new user by providing firstName, lastName, email, and password
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body models.RegisterRequest true "User register details"
+// @Success 201 {object} models.User
+// @Failure 400 {object} map[string]any
+// @Router /api/auth/register [post]
 func (h *AuthHandler) Register(c fiber.Ctx) error {
-	user := new(models.User)
-	if err := c.Bind().Body(user); err != nil {
+	registerRequest := new(models.RegisterRequest)
+	if err := c.Bind().Body(registerRequest); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	if err := user.Validate(); err != nil {
+	fmt.Println(registerRequest)
+	if err := registerRequest.Validate(); err != nil {
+		fmt.Println(err)
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
 	}
+
+	user := new(models.User)
+	user.FirstName = registerRequest.FirstName
+	user.LastName = registerRequest.LastName
+	user.Email = registerRequest.Email
+	user.Password = registerRequest.Password
 
 	tokenPair, err := h.svc.Auth.Register(user)
 	if err != nil {

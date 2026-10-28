@@ -40,12 +40,6 @@ func initApp() (*fiber.App, *database.MongoDBClient) {
 		log.Fatalf("error connecting to database: %v", err)
 	}
 
-	defer func() {
-		if err := db.Disconnect(); err != nil {
-			log.Fatalf("Error disconnecting database: %v", err)
-		}
-	}()
-
 	repo := repositories.NewRepositories(db.Database)
 	svc := services.NewServices(repo)
 	handlers := handlers.NewHandlers(svc)

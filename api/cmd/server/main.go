@@ -8,7 +8,7 @@ import (
 	"syscall"
 )
 
-// @title Fiber Golang Rest API
+// @title Golang Fiber, MongoDB, gRPC, WebSocket, etc... Rest API
 // @version 1.0.0
 // @description This is swagger docs for Fiber Golang Rest API
 // @host localhost:4000
@@ -41,7 +41,7 @@ func main() {
 	log.Panicln("Server is shutting down...")
 
 	if err := db.Disconnect(); err != nil {
-		log.Panicf("Error disconnecting database: %v", err)
+		log.Fatalf("Error disconnecting database: %v", err)
 	}
 
 	if err := app.Shutdown(); err != nil {
