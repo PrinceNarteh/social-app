@@ -5,6 +5,11 @@ import (
 	"github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
+type AuthResponse struct {
+	User  *User  `json:"user"`
+	Token string `json:"token"`
+}
+
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`

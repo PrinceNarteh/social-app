@@ -7,6 +7,8 @@ import (
 	"Server/internal/models"
 	"Server/internal/repositories"
 	"Server/internal/utils"
+
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 var (
@@ -15,45 +17,50 @@ var (
 )
 
 type IAuthService interface {
-	Login(data *models.LoginRequest) (*models.User, *models.TokenPair, error)
-	Register(user *models.User) (*models.TokenPair, error)
+	Login(data *models.LoginRequest) (*models.AuthResponse, error)
+	Register(user *models.User) (*models.AuthResponse, error)
 }
 
 type authService struct {
 	repo *repositories.Repositories
 }
 
-func (s *authService) Login(data *models.LoginRequest) (*models.User, *models.TokenPair, error) {
+func (s *authService) Login(data *models.LoginRequest) (*models.AuthResponse, error) {
 	user, err := s.repo.User.FindByEmail(data.Email)
 	if err != nil {
-		return nil, nil, ErrInvalidCredentials
+		return nil, ErrInvalidCredentials
 	}
 
-	if !user.VerifyPassword(data.Password) {
-		return nil, nil, ErrInvalidCredentials
-	}
-
-	tokenPair, err := utils.GenerateTokens(user)
+	token, err := utils.GenerateToken(user)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return user, tokenPair, nil
+	return &models.AuthResponse{
+		Token: token,
+		User:  user,
+	}, nil
 }
 
-func (s *authService) Register(user *models.User) (*models.TokenPair, error) {
+func (s *authService) Register(user *models.User) (*models.AuthResponse, error) {
 	now := time.Now()
 
 	user.CreatedAt = now
 	user.UpdatedAt = now
 
 	if err := s.repo.User.Create(user); err != nil {
+		if mongo.IsDuplicateKeyError(err) {
+			return nil, ErrEmailExists
+		}
 		return nil, err
 	}
 
-	tokenPair, err := utils.GenerateTokens(user)
+	token, err := utils.GenerateToken(user)
 	if err != nil {
 		return nil, err
 	}
-	return tokenPair, nil
+	return &models.AuthResponse{
+		Token: token,
+		User:  user,
+	}, nil
 }

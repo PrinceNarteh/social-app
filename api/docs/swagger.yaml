@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   models.RegisterRequest:
     properties:
       email:
@@ -45,6 +52,33 @@ info:
   title: Golang Fiber, MongoDB, gRPC, WebSocket, etc... Rest API
   version: 1.0.0
 paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user by providing email and password
+      parameters:
+      - description: User login details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login a user
+      tags:
+      - Authentication
   /api/auth/register:
     post:
       consumes:

@@ -1,7 +1,12 @@
 // Package services
 package services
 
-import "Server/internal/repositories"
+import (
+	"Server/internal/repositories"
+	"errors"
+)
+
+var ErrEmailExists = errors.New("email already in used.")
 
 type Services struct {
 	Auth IAuthService
