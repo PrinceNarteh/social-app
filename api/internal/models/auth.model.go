@@ -6,13 +6,13 @@ import (
 )
 
 type LoginRequest struct {
-	Email    string
-	Password string
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (l LoginRequest) Validate() error {
 	return validation.ValidateStruct(&l,
-		validation.Field(&l.Email, validation.Required, is.Email),
+		validation.Field(&l.Email, validation.Required, is.EmailFormat),
 		validation.Field(&l.Password, validation.Required, validation.Length(2, 50)),
 	)
 }
@@ -28,7 +28,7 @@ func (r RegisterRequest) Validate() error {
 	return validation.ValidateStruct(&r,
 		validation.Field(&r.FirstName, validation.Required, validation.Length(2, 50)),
 		validation.Field(&r.LastName, validation.Required, validation.Length(2, 50)),
-		validation.Field(&r.Email, validation.Required, is.Email),
+		validation.Field(&r.Email, validation.Required, is.EmailFormat),
 		validation.Field(&r.Password, validation.Required, validation.Length(6, 50)),
 	)
 }
