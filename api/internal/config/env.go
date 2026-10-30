@@ -21,8 +21,8 @@ func initConfig() *Config {
 			URL:      getEnv("DB_URL", ""),
 		},
 		JWT: jwtConfig{
-			Secret: []byte(getEnv("JWT_SECRET", "ce26a4a7bead33e504b03f4e13f88015c237f039fe336fec8344bade7d5b0f50e")),
-			TTL:    getEnvAsDuration("JWT_TTL", 15*time.Minute),
+			Secret:    []byte(getEnv("JWT_SECRET", "ce26a4a7bead33e504b03f4e13f88015c237f039fe336fec8344bade7d5b0f50e")),
+			ExpiresAt: getEnvAsDuration("JWT_EXPIRES_AT", 15*time.Minute),
 		},
 	}
 }

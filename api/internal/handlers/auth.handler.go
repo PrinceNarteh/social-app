@@ -1,10 +1,11 @@
 package handlers
 
 import (
+	"errors"
+
 	"Server/internal/models"
 	"Server/internal/services"
 	"Server/internal/utils"
-	"errors"
 
 	"github.com/gofiber/fiber/v3"
 )
@@ -72,11 +73,11 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 	}
 
 	user := &models.User{
-		user.FirstName: registerRequest.FirstName
-		user.LastName: registerRequest.LastName
-		user.Email: registerRequest.Email
-		user.Followers: make([]string, 0)
-		user.Following: make([]string, 0)
+		FirstName: registerRequest.FirstName,
+		LastName:  registerRequest.LastName,
+		Email:     registerRequest.Email,
+		Followers: make([]string, 0),
+		Following: make([]string, 0),
 	}
 
 	if err := user.HashPassword(); err != nil {

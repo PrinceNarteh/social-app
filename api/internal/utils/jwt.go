@@ -24,11 +24,11 @@ func GenerateToken(user *models.User) (string, error) {
 			Subject:   user.ID.Hex(),
 			IssuedAt:  jwt.NewNumericDate(now),
 			NotBefore: jwt.NewNumericDate(now),
-			ExpiresAt: jwt.NewNumericDate(now.Add(config.Env.JWT.AccessTokenTTL)),
+			ExpiresAt: jwt.NewNumericDate(now.Add(config.Env.JWT.ExpiresAt)),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtClaims)
-	tokenStr, err := token.SignedString(config.Env.JWT.AccessTokenSecret)
+	tokenStr, err := token.SignedString(config.Env.JWT.Secret)
 	if err != nil {
 		return "", err
 	}
