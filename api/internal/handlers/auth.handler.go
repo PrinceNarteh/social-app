@@ -71,12 +71,13 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	user := new(models.User)
-	user.FirstName = registerRequest.FirstName
-	user.LastName = registerRequest.LastName
-	user.Email = registerRequest.Email
-	user.Followers = make([]string, 0)
-	user.Following = make([]string, 0)
+	user := &models.User{
+		user.FirstName: registerRequest.FirstName
+		user.LastName: registerRequest.LastName
+		user.Email: registerRequest.Email
+		user.Followers: make([]string, 0)
+		user.Following: make([]string, 0)
+	}
 
 	if err := user.HashPassword(); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "internal server error")
