@@ -10,14 +10,14 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-var _ IAuthHandler = (*AuthHandler)(nil)
+var _ IAuthHandler = (*authHandler)(nil)
 
 type IAuthHandler interface {
 	Login(c fiber.Ctx) error
 	Register(c fiber.Ctx) error
 }
 
-type AuthHandler struct {
+type authHandler struct {
 	svc *services.Services
 }
 
@@ -31,7 +31,7 @@ type AuthHandler struct {
 // @Success 200 {object} models.User
 // @Failure 400 {object} map[string]any
 // @Router /api/auth/login [post]
-func (h *AuthHandler) Login(c fiber.Ctx) error {
+func (h *authHandler) Login(c fiber.Ctx) error {
 	loginRequest := new(models.LoginRequest)
 	if err := c.Bind().Body(loginRequest); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
@@ -62,7 +62,7 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 // @Success 201 {object} models.User
 // @Failure 400 {object} map[string]any
 // @Router /api/auth/register [post]
-func (h *AuthHandler) Register(c fiber.Ctx) error {
+func (h *authHandler) Register(c fiber.Ctx) error {
 	registerRequest := new(models.RegisterRequest)
 	if err := c.Bind().Body(registerRequest); err != nil {
 		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())

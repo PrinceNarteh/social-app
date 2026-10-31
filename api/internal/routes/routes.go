@@ -9,4 +9,5 @@ import (
 func InitRoutes(r fiber.Router, h *handlers.Handlers) {
 	api := r.Group("/api")
 	authRoutes(api, h)
+	userRoutes(api, h)
 }

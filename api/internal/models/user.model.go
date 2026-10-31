@@ -4,6 +4,8 @@ package models
 import (
 	"time"
 
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -39,4 +41,20 @@ func (u *User) HashPassword() error {
 
 func (u *User) VerifyPassword(password string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)) == nil
+}
+
+type UpdateUser struct {
+	FirstName *string `bson:"firstName" json:"firstName"`
+	LastName  *string `bson:"lastName" json:"lastName"`
+	ImageUrl  *string `bson:"imageUrl" json:"imageUrl"`
+	Bio       *string `bson:"bio" json:"bio"`
+}
+
+func (u UpdateUser) Validate() error {
+	return validation.ValidateStruct(&u,
+		validation.Field(&u.FirstName, validation.Length(1, 50)),
+		validation.Field(&u.LastName, validation.Length(1, 50)),
+		validation.Field(&u.ImageUrl, is.URL),
+		validation.Field(&u.Bio, validation.Length(5, 500)),
+	)
 }
