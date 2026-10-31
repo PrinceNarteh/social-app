@@ -2,7 +2,7 @@ package utils
 
 import "github.com/gofiber/fiber/v3"
 
-type response struct {
+type Response struct {
 	Success    bool `json:"success"`
 	StatusCode int  `json:"statusCode"`
 	Data       any  `json:"data,omitempty"`
@@ -10,7 +10,7 @@ type response struct {
 }
 
 func SuccessResponse(ctx fiber.Ctx, statusCode int, data any) error {
-	return ctx.Status(statusCode).JSON(response{
+	return ctx.Status(statusCode).JSON(Response{
 		Success:    true,
 		StatusCode: statusCode,
 		Data:       data,
@@ -18,9 +18,9 @@ func SuccessResponse(ctx fiber.Ctx, statusCode int, data any) error {
 }
 
 func ErrorResponse(ctx fiber.Ctx, statusCode int, err any) error {
-	return ctx.Status(statusCode).JSON(response{
+	return ctx.Status(statusCode).JSON(Response{
 		Success:    false,
 		StatusCode: statusCode,
-		Data:       err,
+		Error:      err,
 	})
 }

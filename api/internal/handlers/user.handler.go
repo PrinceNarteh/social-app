@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"errors"
+
 	"Server/internal/models"
 	"Server/internal/services"
 	"Server/internal/utils"
@@ -13,6 +15,7 @@ var _ IUserHandler = (*userHandler)(nil)
 type IUserHandler interface {
 	FindOne(ctx fiber.Ctx) error
 	Update(ctx fiber.Ctx) error
+	Delete(ctx fiber.Ctx) error
 }
 
 type userHandler struct {
@@ -27,14 +30,17 @@ type userHandler struct {
 // @Produce json
 // @Param id path string true "Retrieve a user by ID"
 // @Success 200 {object} models.User
-// @Failure 400 {object} map[string]any
+// @Failure 400 {object} utils.Response
 // @Router /api/users/{id} [get]
 func (h *userHandler) FindOne(c fiber.Ctx) error {
 	userId := c.Params("id")
 
 	user, err := h.svc.User.FindOne(userId)
 	if err != nil {
-		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
+		if errors.Is(err, services.ErrUserNotFound) {
+			return utils.ErrorResponse(c, fiber.StatusNotFound, err.Error())
+		}
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return utils.SuccessResponse(c, fiber.StatusOK, user)
@@ -49,7 +55,7 @@ func (h *userHandler) FindOne(c fiber.Ctx) error {
 // @Param id path string true "User login details"
 // @Param request body models.UpdateUser true "User login details"
 // @Success 200 {object} models.User
-// @Failure 400 {object} map[string]any
+// @Failure 400 {object} utils.Response
 // @Router /api/users/{id} [patch]
 func (h *userHandler) Update(c fiber.Ctx) error {
 	userId := c.Params("id")
@@ -60,8 +66,32 @@ func (h *userHandler) Update(c fiber.Ctx) error {
 
 	user, err := h.svc.User.Update(userId, updates)
 	if err != nil {
-		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
+		if errors.Is(err, services.ErrUserNotFound) {
+			return utils.ErrorResponse(c, fiber.StatusNotFound, err.Error())
+		}
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return utils.SuccessResponse(c, fiber.StatusOK, user)
+}
+
+// Delete
+// @Summary Delete a user
+// @Description Delete a user from the database
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 string string
+// @Failure 400 {object} utils.Response
+// @Router /api/users/{id} [delete]
+func (h *userHandler) Delete(c fiber.Ctx) error {
+	userId := c.Params("id")
+
+	msg, err := h.svc.User.Delete(userId)
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	return utils.SuccessResponse(c, fiber.StatusOK, msg)
 }

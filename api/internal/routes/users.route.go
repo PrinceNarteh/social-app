@@ -10,4 +10,5 @@ func userRoutes(r fiber.Router, h *handlers.Handlers) {
 	routes := r.Group("/users")
 	routes.Get("/:id", h.User.FindOne)
 	routes.Patch("/:id", h.User.Update)
+	routes.Delete("/:id", h.User.Delete)
 }

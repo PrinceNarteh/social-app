@@ -56,6 +56,15 @@ definitions:
       updatedAt:
         type: string
     type: object
+  utils.Response:
+    properties:
+      data: {}
+      error: {}
+      statusCode:
+        type: integer
+      success:
+        type: boolean
+    type: object
 host: localhost:4000
 info:
   contact: {}
@@ -119,6 +128,30 @@ paths:
       tags:
       - Authentication
   /api/users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user from the database
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Delete a user
+      tags:
+      - Users
     get:
       consumes:
       - application/json
@@ -139,8 +172,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/utils.Response'
       summary: Find a user
       tags:
       - Users
@@ -170,8 +202,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/utils.Response'
       summary: Update a user
       tags:
       - Users

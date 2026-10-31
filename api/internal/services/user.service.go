@@ -7,13 +7,19 @@ import (
 	"Server/internal/repositories"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-var _ IUsersService = (*usersService)(nil)
+var (
+	_                 IUsersService = (*usersService)(nil)
+	ErrUserNotFound                 = errors.New("user not found")
+	ErrInternalServer               = errors.New("something went wrong")
+)
 
 type IUsersService interface {
 	FindOne(id string) (*models.User, error)
 	Update(id string, updates *models.UpdateUser) (*models.User, error)
+	Delete(id string) (string, error)
 }
 
 type usersService struct {
@@ -27,7 +33,12 @@ func (s *usersService) FindOne(id string) (*models.User, error) {
 	}
 	user, err := s.repo.User.FindById(userId)
 	if err != nil {
-		return nil, err
+		switch {
+		case errors.Is(err, mongo.ErrNoDocuments):
+			return nil, ErrUserNotFound
+		default:
+			return nil, ErrInternalServer
+		}
 	}
 	return user, nil
 }
@@ -58,8 +69,26 @@ func (s *usersService) Update(id string, updates *models.UpdateUser) (*models.Us
 
 	user, err := s.repo.User.Update(userId, updateData)
 	if err != nil {
-		return nil, err
+		switch {
+		case errors.Is(err, mongo.ErrNoDocuments):
+			return nil, ErrUserNotFound
+		default:
+			return nil, ErrInternalServer
+		}
 	}
 
 	return user, nil
+}
+
+func (s *usersService) Delete(id string) (string, error) {
+	userId, err := bson.ObjectIDFromHex(id)
+	if err != nil {
+		return "", errors.New("invalid id")
+	}
+
+	if err := s.repo.User.Delete(userId); err != nil {
+		return "", err
+	}
+
+	return "user deleted successfully", nil
 }
