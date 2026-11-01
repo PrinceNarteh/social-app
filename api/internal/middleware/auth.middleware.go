@@ -1,18 +1,30 @@
 package middleware
 
 import (
-	"Server/internal/config"
+	"strings"
+
 	"Server/internal/utils"
 
-	jwtware "github.com/gofiber/contrib/v3/jwt"
 	"github.com/gofiber/fiber/v3"
 )
 
-func AuthGuard() fiber.Handler {
-	return jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: config.Env.JWT.Secret},
-		ErrorHandler: func(c fiber.Ctx, err error) error {
-			return utils.ErrorResponse(c, fiber.StatusUnauthorized, "Unauthorized: Invalid or missing token")
-		},
-	})
+func AuthGuard(c fiber.Ctx) error {
+	authHeader := c.Get("Authorization")
+	if authHeader == "" {
+		return utils.ErrorResponse(c, fiber.StatusUnauthorized, "Authorization header not present")
+	}
+
+	tokenSlice := strings.Split(authHeader, " ")
+	if len(tokenSlice) != 2 || tokenSlice[0] != "Bearer" {
+		return utils.ErrorResponse(c, fiber.StatusUnauthorized, `Invalid token format. It should be "Bearer token"`)
+	}
+
+	claims, err := utils.VerifyToken(tokenSlice[1])
+	if err != nil {
+		return err
+	}
+
+	c.Locals("userId", claims.Subject)
+
+	return c.Next()
 }

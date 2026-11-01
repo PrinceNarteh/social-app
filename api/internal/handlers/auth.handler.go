@@ -65,7 +65,7 @@ func (h *authHandler) Login(c fiber.Ctx) error {
 func (h *authHandler) Register(c fiber.Ctx) error {
 	registerRequest := new(models.RegisterRequest)
 	if err := c.Bind().Body(registerRequest); err != nil {
-		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "request body not present")
 	}
 
 	if err := registerRequest.Validate(); err != nil {

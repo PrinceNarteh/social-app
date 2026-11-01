@@ -54,6 +54,7 @@ func (h *userHandler) FindOne(c fiber.Ctx) error {
 // @Produce json
 // @Param id path string true "User login details"
 // @Param request body models.UpdateUser true "User login details"
+// Security BearerAuth
 // @Success 200 {object} models.User
 // @Failure 400 {object} utils.Response
 // @Router /api/users/{id} [patch]
@@ -61,7 +62,13 @@ func (h *userHandler) Update(c fiber.Ctx) error {
 	userId := c.Params("id")
 	updates := new(models.UpdateUser)
 	if err := c.Bind().Body(updates); err != nil {
-		return utils.ErrorResponse(c, fiber.StatusBadRequest, err.Error())
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "request body not present")
+	}
+
+	tokenId := c.Locals("userId").(string)
+
+	if userId != tokenId {
+		return utils.ErrorResponse(c, fiber.StatusUnauthorized, "you are not authorized to update this profile")
 	}
 
 	user, err := h.svc.User.Update(userId, updates)

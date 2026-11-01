@@ -31,7 +31,7 @@ func (s *authService) Login(data *models.LoginRequest) (*models.AuthResponse, er
 		return nil, ErrInvalidCredentials
 	}
 
-	token, err := utils.GenerateToken(user)
+	token, err := utils.GenerateToken(user.ID.Hex())
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (s *authService) Register(user *models.User) (*models.AuthResponse, error) 
 		return nil, err
 	}
 
-	token, err := utils.GenerateToken(user)
+	token, err := utils.GenerateToken(user.ID.Hex())
 	if err != nil {
 		return nil, err
 	}
